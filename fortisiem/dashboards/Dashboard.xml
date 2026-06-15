@@ -1,0 +1,268 @@
+<DashboardConfigs>
+    <group>
+        <name>FortiDeceptor - Threat Overview</name>
+        <description/>
+        <type>Widget</type>
+        <dashboard id="21685701">
+            <columns>0</columns>
+        </dashboard>
+        <Widgets>
+            <widget pos="0">
+                <name>FDC - Active Attackers</name>
+                <description>FDC - Active Attackers</description>
+                <horizontalCell>4</horizontalCell>
+                <verticalCell>3</verticalCell>
+                <posX>0</posX>
+                <posY>0</posY>
+                <displaySettings>{"displayType":"text","displayColumn":0,"displayRowNum":5,"colorSettings":[{"inactive":false,"min":0,"max":3,"low":1,"high":2,"reverse":false,"enable":false,"gradient":false,"autoUpdate":true,"gradientColors":[],"column":{"field":"COUNT(DISTINCT srcIpAddr)","label":"Active Attackers","dataType":"Integer"},"dataType":"Integer","$$hashKey":"object:3207"}],"labelFields":[]}</displaySettings>
+                <globalDisplaySettings>{"enableColor":false,"reverseColor":false,"gradientColor":true}</globalDisplaySettings>
+                <dataParam>{"display":"Gauge","timeWindow":28800000,"numResults":10,"autoRefresh":5,"innerTimeWindow":3600000,"trendInterval":"auto","chartSet":"0","timeWindowInMins":480,"timeRange":"Last 8 hours","custIds":[1,2002],"resultLimit":10}</dataParam>
+                <dataProviderType>Report</dataProviderType>
+                <dataProviderNaturalId/>
+                <Report naturalId="PH_SYS_Report_1781184903991">
+                    <Name>FDC - Active Attackers</Name>
+                    <Description/>
+                    <CustomerScope groupByEachCustomer="false">
+                        <Include all="true"/>
+                        <Exclude/>
+                    </CustomerScope>
+                    <PatternClause>
+                        <SubPattern id="22036760" name="">
+                            <SingleEvtConstr>eventType CONTAIN "FortiDeceptor" AND eventType NOT CONTAIN "FortiDeceptor-GUI" AND srcIpAddr!=172.16.236.1</SingleEvtConstr>
+                        </SubPattern>
+                    </PatternClause>
+                    <SelectClause>
+                        <AttrList>COUNT(DISTINCT srcIpAddr) "Active Attackers"</AttrList>
+                    </SelectClause>
+                    <userRoles>
+                        <roles custId="0">992251</roles>
+                    </userRoles>
+                    <SyncOrgs/>
+                    <DataSource/>
+                    <ReportInterval>
+                        <Low>1781513640</Low>
+                        <High>1781517239</High>
+                    </ReportInterval>
+                    <TrendInterval>auto</TrendInterval>
+                    <TimeZone/>
+                </Report>
+            </widget>
+            <widget pos="1">
+                <name>FDC - Credentials Used</name>
+                <description>FDC - Credentials Used</description>
+                <horizontalCell>8</horizontalCell>
+                <verticalCell>7</verticalCell>
+                <posX>16</posX>
+                <posY>6</posY>
+                <displaySettings>{"showBar":true,"colorSettings":[{"inactive":false,"min":0,"max":1248,"low":406,"high":842,"reverse":false,"enable":true,"gradient":true,"autoUpdate":true,"gradientColors":["#00a343 0%","#a68d30 406%","#e61218 842%","undefined 100%"],"column":{"field":"count_aster","label":"Attempts","dataType":"Integer"},"dataType":""}],"labelFields":["user","srcIpAddr","serviceName"]}</displaySettings>
+                <globalDisplaySettings/>
+                <dataParam>{"display":"Table","timeWindow":28800000,"numResults":10,"autoRefresh":5,"innerTimeWindow":3600000,"trendInterval":"auto","timeWindowInMins":480,"timeRange":"Last 8 hours","custIds":[1,2002],"resultLimit":10}</dataParam>
+                <dataProviderType>Report</dataProviderType>
+                <dataProviderNaturalId/>
+                <Report naturalId="PH_SYS_Report_1781185533932">
+                    <Name>FDC - Credentials Used</Name>
+                    <Description/>
+                    <CustomerScope groupByEachCustomer="false">
+                        <Include all="true"/>
+                        <Exclude/>
+                    </CustomerScope>
+                    <PatternClause>
+                        <SubPattern id="22036755" name="">
+                            <SingleEvtConstr>eventType CONTAIN "FortiDeceptor-" AND user!="NA" AND user!="System" AND srcIpAddr!=172.16.236.1</SingleEvtConstr>
+                            <GroupByAttr>user,srcIpAddr,serviceName</GroupByAttr>
+                        </SubPattern>
+                    </PatternClause>
+                    <SelectClause>
+                        <AttrList>user "UserName",srcIpAddr "Attacker IP",serviceName "Service",COUNT(*) "Attempts"</AttrList>
+                    </SelectClause>
+                    <OrderByClause>
+                        <AttrList>COUNT(*) DESC</AttrList>
+                    </OrderByClause>
+                    <userRoles>
+                        <roles custId="0">992251</roles>
+                    </userRoles>
+                    <SyncOrgs/>
+                    <DataSource/>
+                    <ReportInterval>
+                        <Low>1781513640</Low>
+                        <High>1781517239</High>
+                    </ReportInterval>
+                    <TrendInterval>auto</TrendInterval>
+                    <TimeZone/>
+                </Report>
+            </widget>
+            <widget pos="2">
+                <name>FDC - Incident Timeline</name>
+                <description>FDC - Incident Timeline</description>
+                <horizontalCell>20</horizontalCell>
+                <verticalCell>6</verticalCell>
+                <posX>4</posX>
+                <posY>0</posY>
+                <displaySettings>{"showBar":false,"colorSettings":[{"inactive":false,"min":0,"max":66,"low":22,"high":44,"reverse":false,"enable":true,"gradient":true,"autoUpdate":true,"gradientColors":[],"column":{"field":"count_aster","label":"Incidents","value":0,"dataType":"Integer"},"dataType":""}],"labelFields":[]}</displaySettings>
+                <globalDisplaySettings/>
+                <dataParam>{"display":"Line","timeWindow":28800000,"numResults":10,"autoRefresh":5,"innerTimeWindow":3600000,"trendInterval":"auto","chartSet":"0","enable2SidesLine":false,"timeWindowInMins":480,"timeRange":"Last 8 hours","custIds":[1,2002],"resultLimit":10}</dataParam>
+                <dataProviderType>Report</dataProviderType>
+                <dataProviderNaturalId/>
+                <Report naturalId="PH_SYS_Report_1781185784639">
+                    <Name>FDC - Incident Timeline</Name>
+                    <Description/>
+                    <CustomerScope groupByEachCustomer="false">
+                        <Include all="true"/>
+                        <Exclude/>
+                    </CustomerScope>
+                    <PatternClause>
+                        <SubPattern id="22036758" name="">
+                            <SingleEvtConstr>eventType CONTAIN "FortiDeceptor-" AND eventType NOT CONTAIN "Generic" AND eventType NOT CONTAIN "Attack-Event"</SingleEvtConstr>
+                        </SubPattern>
+                    </PatternClause>
+                    <SelectClause>
+                        <AttrList>COUNT(*) "Incidents"</AttrList>
+                    </SelectClause>
+                    <OrderByClause>
+                        <AttrList>COUNT(*) DESC</AttrList>
+                    </OrderByClause>
+                    <userRoles>
+                        <roles custId="0">992251</roles>
+                    </userRoles>
+                    <SyncOrgs/>
+                    <DataSource/>
+                    <ReportInterval>
+                        <Low>1781513640</Low>
+                        <High>1781517239</High>
+                    </ReportInterval>
+                    <TrendInterval>auto</TrendInterval>
+                    <TimeZone/>
+                </Report>
+            </widget>
+            <widget pos="3">
+                <name>FDC - Top Attackers</name>
+                <description>FDC - Top Attackers</description>
+                <horizontalCell>8</horizontalCell>
+                <verticalCell>7</verticalCell>
+                <posX>0</posX>
+                <posY>6</posY>
+                <displaySettings>{"showBar":true,"colorSettings":[{"inactive":false,"min":0,"max":1602,"low":534,"high":1068,"reverse":false,"enable":true,"gradient":true,"autoUpdate":true,"gradientColors":["#00a343 0%","#a88d2f 534%","#e61218 1068%","undefined 100%"],"column":{"field":"count_aster","label":"Events","dataType":"Integer"},"dataType":""}],"labelFields":["srcIpAddr"]}</displaySettings>
+                <globalDisplaySettings/>
+                <dataParam>{"display":"Table","timeWindow":28800000,"numResults":10,"autoRefresh":5,"innerTimeWindow":3600000,"trendInterval":"auto","timeWindowInMins":480,"timeRange":"Last 8 hours","custIds":[1,2002],"resultLimit":10}</dataParam>
+                <dataProviderType>Report</dataProviderType>
+                <dataProviderNaturalId/>
+                <Report naturalId="PH_SYS_Report_1781185294019">
+                    <Name>FDC - Top Attackers</Name>
+                    <Description/>
+                    <CustomerScope groupByEachCustomer="false">
+                        <Include all="true"/>
+                        <Exclude/>
+                    </CustomerScope>
+                    <PatternClause>
+                        <SubPattern id="22036759" name="">
+                            <SingleEvtConstr>eventType CONTAIN "FortiDeceptor-" AND srcIpAddr!=172.16.236.1</SingleEvtConstr>
+                            <GroupByAttr>srcIpAddr</GroupByAttr>
+                        </SubPattern>
+                    </PatternClause>
+                    <SelectClause>
+                        <AttrList>srcIpAddr "Attacker IP",COUNT(*) "Events"</AttrList>
+                    </SelectClause>
+                    <OrderByClause>
+                        <AttrList>COUNT(*) DESC</AttrList>
+                    </OrderByClause>
+                    <userRoles>
+                        <roles custId="0">992251</roles>
+                    </userRoles>
+                    <SyncOrgs/>
+                    <DataSource/>
+                    <ReportInterval>
+                        <Low>1781513640</Low>
+                        <High>1781517239</High>
+                    </ReportInterval>
+                    <TrendInterval>auto</TrendInterval>
+                    <TimeZone/>
+                </Report>
+            </widget>
+            <widget pos="4">
+                <name>FDC - Attack Operations</name>
+                <description>FDC - Attack Operations</description>
+                <horizontalCell>8</horizontalCell>
+                <verticalCell>7</verticalCell>
+                <posX>8</posX>
+                <posY>6</posY>
+                <displaySettings>{"showBar":true,"colorSettings":[{"inactive":false,"min":0,"max":19,"low":6,"high":13,"reverse":false,"enable":true,"gradient":true,"autoUpdate":true,"gradientColors":[],"column":{"field":"count_aster","label":"COUNT","dataType":"Integer"},"dataType":"","$$hashKey":"object:4036"}],"labelFields":["opName"]}</displaySettings>
+                <globalDisplaySettings>{"enableColor":true,"reverseColor":false,"gradientColor":true}</globalDisplaySettings>
+                <dataParam>{"display":"Table","timeWindow":28800000,"numResults":10,"autoRefresh":5,"innerTimeWindow":3600000,"trendInterval":"auto","timeWindowInMins":480,"timeRange":"Last 8 hours","custIds":[1,2002],"resultLimit":10}</dataParam>
+                <dataProviderType>Report</dataProviderType>
+                <dataProviderNaturalId/>
+                <Report naturalId="PH_SYS_Report_1781185386548">
+                    <Name>FDC - Attack Operations</Name>
+                    <Description/>
+                    <CustomerScope groupByEachCustomer="false">
+                        <Include all="true"/>
+                        <Exclude/>
+                    </CustomerScope>
+                    <PatternClause>
+                        <SubPattern id="22036753" name="">
+                            <SingleEvtConstr>eventType CONTAIN "FortiDeceptor-"</SingleEvtConstr>
+                            <GroupByAttr>opName</GroupByAttr>
+                        </SubPattern>
+                    </PatternClause>
+                    <SelectClause>
+                        <AttrList>opName "Operation",COUNT(*) "COUNT"</AttrList>
+                    </SelectClause>
+                    <OrderByClause>
+                        <AttrList>COUNT(*) DESC</AttrList>
+                    </OrderByClause>
+                    <userRoles>
+                        <roles custId="0">992251</roles>
+                    </userRoles>
+                    <SyncOrgs/>
+                    <DataSource/>
+                    <ReportInterval>
+                        <Low>1781513640</Low>
+                        <High>1781517239</High>
+                    </ReportInterval>
+                    <TrendInterval>auto</TrendInterval>
+                    <TimeZone/>
+                </Report>
+            </widget>
+            <widget pos="5">
+                <name>FDC - Decoys Under Attack</name>
+                <description>FDC - Decoys Under Attack</description>
+                <horizontalCell>4</horizontalCell>
+                <verticalCell>3</verticalCell>
+                <posX>0</posX>
+                <posY>3</posY>
+                <displaySettings>{"displayType":"text","displayColumn":0,"displayRowNum":5,"colorSettings":[{"inactive":false,"min":0,"max":3,"low":1,"high":2,"reverse":false,"enable":false,"gradient":true,"autoUpdate":true,"gradientColors":[],"column":{"field":"COUNT(DISTINCT destIpAddr)","label":"Decoys Under Attack","dataType":"Integer"},"dataType":"Integer","$$hashKey":"object:2638"}],"labelFields":[]}</displaySettings>
+                <globalDisplaySettings>{"enableColor":false,"reverseColor":false,"gradientColor":true}</globalDisplaySettings>
+                <dataParam>{"display":"Gauge","timeWindow":3600000,"numResults":10,"autoRefresh":5,"innerTimeWindow":3600000,"trendInterval":"auto","chartSet":"0","timeWindowInMins":60,"timeRange":"Last 1 hour","custIds":[1],"resultLimit":10}</dataParam>
+                <dataProviderType>Report</dataProviderType>
+                <dataProviderNaturalId/>
+                <Report naturalId="PH_SYS_Report_1781185031747">
+                    <Name>FDC - Decoys Under Attack</Name>
+                    <Description/>
+                    <CustomerScope groupByEachCustomer="false">
+                        <Include all="true"/>
+                        <Exclude/>
+                    </CustomerScope>
+                    <PatternClause>
+                        <SubPattern id="22036762" name="">
+                            <SingleEvtConstr>eventType CONTAIN "FortiDeceptor-" AND eventType NOT CONTAIN "FortiDeceptor-GUI"</SingleEvtConstr>
+                        </SubPattern>
+                    </PatternClause>
+                    <SelectClause>
+                        <AttrList>COUNT(DISTINCT destIpAddr) "Decoys Under Attack"</AttrList>
+                    </SelectClause>
+                    <userRoles>
+                        <roles custId="0">992251</roles>
+                    </userRoles>
+                    <SyncOrgs/>
+                    <DataSource/>
+                    <ReportInterval>
+                        <Low>1781513640</Low>
+                        <High>1781517239</High>
+                    </ReportInterval>
+                    <TrendInterval>auto</TrendInterval>
+                    <TimeZone/>
+                </Report>
+            </widget>
+        </Widgets>
+    </group>
+</DashboardConfigs>
+
