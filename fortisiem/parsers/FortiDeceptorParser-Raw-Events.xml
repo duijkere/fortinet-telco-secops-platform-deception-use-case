@@ -1,0 +1,157 @@
+<patternDefinitions>
+  <pattern name="patStrEndSep"><![CDATA[[^|]*]]></pattern>
+  <pattern name="patStrEndComma"><![CDATA[[^,]+]]></pattern>
+</patternDefinitions>
+
+<!-- 
+       Looking for raw attack events from FortiDeceptor associated with logid 0101000001
+       -->
+
+<eventFormatRecognizer><![CDATA[(?:device=FortiDeceptor|devid="?FDC(?:-VM|-VMTM|VMSTM)\w+"?).*logid=0101000001.*subtype=attack]]></eventFormatRecognizer>
+
+<parsingInstructions>
+
+  <!-- 
+       Parse syslog header for 2 different header formats
+       -->
+  <switch>
+    <case>
+      <!-- Format A: Standard RFC5424-style: <PRI>2026-06-08T15:06:00Z hostname body -->
+      <collectFieldsByRegex src="$_rawmsg">
+        <regex><![CDATA[<:gPatSyslogPRI>?<_year:gPatYear>-<_mon:gPatMonNum>-<_day:gPatDay>T<_time:gPatTime>(?:<_tz:gPatTimeZone>)?\s+\S+\s+<_body:gPatMesgBody>]]></regex>
+      </collectFieldsByRegex>
+    </case>
+    <case>
+      <!-- Format B: <185>reporting_ip=x timestamp=x <25>2026-06-08T15:06:00 body -->
+      <collectFieldsByRegex src="$_rawmsg">
+        <regex><![CDATA[<:gPatSyslogPRI>\S+=\S+\s+\S+=\S+\s+<:gPatSyslogPRI>?<_year:gPatYear>-<_mon:gPatMonNum>-<_day:gPatDay>T<_time:gPatTime>(?:<_tz:gPatTimeZone>)?\s+<_body:gPatMesgBody>]]></regex>
+      </collectFieldsByRegex>
+    </case>
+    <default>
+      <setEventAttribute attr="_body">$_rawmsg</setEventAttribute>
+    </default>
+  </switch>
+
+  <!-- 
+       Set eventType to FortiDeceptor-Attack-Event
+       -->
+  <setEventAttribute attr="eventType">FortiDeceptor-Attack-Event</setEventAttribute>
+
+  <!-- 
+       Extract metadata (case-sensitive!)
+       -->
+  <collectFieldsByKeyValuePair kvsep="=" sep=" " src="$_body">
+    <attrKeyMap attr="action"        key="action"/>
+    <attrKeyMap attr="_date"         key="date"/>
+    <attrKeyMap attr="reptDevName"   key="devhost"/>
+    <attrKeyMap attr="reptDevName"   key="devid"/>
+    <attrKeyMap attr="logLevel"      key="level"/>
+    <attrKeyMap attr="logID"         key="logid"/>
+    <attrKeyMap attr="status"        key="status"/>
+    <attrKeyMap attr="subtype"       key="subtype"/>
+    <attrKeyMap attr="_time"         key="time"/>
+    <attrKeyMap attr="type"          key="type"/>
+    <attrKeyMap attr="_tz"           key="tzone"/>
+    <attrKeyMap attr="_tz"           key="tzoffset"/>
+    <attrKeyMap attr="componentName" key="ui"/>
+  </collectFieldsByKeyValuePair>
+
+  <!-- 
+       Extract Format A metadata  
+       -->
+  <collectFieldsByKeyValuePair kvsep="=" sep=" " src="$_body">
+
+    <!-- Source (attacker) -->
+    <attrKeyMap attr="srcIpAddr"       key="attackerip"/>
+    <attrKeyMap attr="srcIpPort"       key="attackerport"/>
+
+    <!-- Destination (decoy / victim) -->
+    <attrKeyMap attr="destIpAddr"      key="victimip"/>
+    <attrKeyMap attr="destIpPort"      key="victimport"/>
+
+    <!-- Operation and service  -->
+    <attrKeyMap attr="opName"          key="operation"/>
+    <attrKeyMap attr="serviceName"     key="service"/>
+
+    <!-- Attacker credential used against decoy -->
+    <attrKeyMap attr="user"            key="username"/>
+    <attrKeyMap attr="password"        key="Password"/>
+
+    <!-- FDC correlation data — link raw events to incidents -->
+    <attrKeyMap attr="inIncidentIdStr" key="incidentid"/>
+    <attrKeyMap attr="externalId"      key="eventid"/>
+    <attrKeyMap attr="tagName"         key="tagkey"/>
+
+    <!-- FDC severity  -->
+    <attrKeyMap attr="_fdcSeverity"    key="severity"/>
+
+    <!-- Decoy info  -->
+    <attrKeyMap attr="decoyType"       key="decoytype"/>
+    <attrKeyMap attr="decoyGroup"      key="decoygroup"/>
+
+    <!-- Decoy event msg -->
+    <attrKeyMap attr="description"     key="msg"/>
+
+  </collectFieldsByKeyValuePair>
+
+  <!-- 
+       Set Severity
+       -->
+  <choose>
+    <when test="not_exist _fdcSeverity">
+      <!-- No severity field — fall back to syslog level -->
+      <choose>
+        <when test="$logLevel = 'alert'">
+          <setEventAttribute attr="eventSeverity">8</setEventAttribute>
+        </when>
+        <when test="$logLevel = 'critical'">
+          <setEventAttribute attr="eventSeverity">9</setEventAttribute>
+        </when>
+        <otherwise>
+          <setEventAttribute attr="eventSeverity">5</setEventAttribute>
+        </otherwise>
+      </choose>
+    </when>
+    <when test="$_fdcSeverity = 'critical'">
+      <setEventAttribute attr="eventSeverity">9</setEventAttribute>
+    </when>
+    <when test="$_fdcSeverity = 'high'">
+      <setEventAttribute attr="eventSeverity">8</setEventAttribute>
+    </when>
+    <when test="$_fdcSeverity = 'alert'">
+      <setEventAttribute attr="eventSeverity">8</setEventAttribute>
+    </when>
+    <when test="$_fdcSeverity = 'medium'">
+      <setEventAttribute attr="eventSeverity">5</setEventAttribute>
+    </when>
+    <when test="$_fdcSeverity = 'low'">
+      <setEventAttribute attr="eventSeverity">3</setEventAttribute>
+    </when>
+  </choose>
+
+  <!-- 
+      Parse date 
+       -->
+  <when test="exist _date">
+    <collectFieldsByRegex src="$_date">
+      <regex><![CDATA[<_year:gPatYear>-<_mon:gPatMon>-<_day:gPatDay>]]></regex>
+    </collectFieldsByRegex>
+  </when>
+
+  <!-- 
+       Set Date / Time
+       -->
+  <choose>
+    <when test="exist _tz">
+      <when test="matches($_tz, '^\d+')">
+        <setEventAttribute attr="_tz">combineMsgId("+", $_tz)</setEventAttribute>
+      </when>
+      <setEventAttribute attr="_tz">combineMsgId($_tz, "sec")</setEventAttribute>
+      <setEventAttribute attr="deviceTime">toDateTime($_mon, $_day, $_year, $_time, $_tz)</setEventAttribute>
+    </when>
+    <otherwise>
+      <setEventAttribute attr="deviceTime">toDateTime($_mon, $_day, $_year, $_time)</setEventAttribute>
+    </otherwise>
+  </choose>
+
+</parsingInstructions>
